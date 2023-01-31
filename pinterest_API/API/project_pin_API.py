@@ -1,12 +1,23 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
-from json import dumps
+from json import dump
 from kafka import KafkaProducer
+import json
 
 app = FastAPI()
 
+# producer = KafkaProducer(
+#     bootstrap_servers='localhost:9092',
+#     value_serializer= lambda x : str(x, 'utf-8')
+# )
 
+# producer = KafkaProducer(bootstrap_servers='localhost:9092',
+# value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+
+producer = KafkaProducer(bootstrap_servers='localhost:9092',
+value_serializer=lambda v: bytes(str(v), 'utf-8')
+)
 
 class Data(BaseModel):
     category: str
@@ -25,6 +36,10 @@ class Data(BaseModel):
 @app.post("/pin/")
 def get_db_row(item: Data):
     data = dict(item)
+    print(data)
+    # for k in data:
+    #     producer.send('firstTopic', k)
+    producer.send('firstTopic', data)
     return item
 
 
