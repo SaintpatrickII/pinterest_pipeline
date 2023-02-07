@@ -68,10 +68,13 @@ producer = KafkaProducer(
 # sleep(2)
 for message in consumer_batch:
     print(message.value)
-    with tempfile.TemporaryDirectory() as tmpdict:
-        f = tmpdict.write(str(message.value))
+    mes = str(message.value)
+    print(type(message))
+    print(type(mes))
+    with tempfile.TemporaryFile() as tmpfile:
+        f = tempfile.write(mes)
         fs = f.read()
         print(fs)
-        s3_client.upload_file(tmpdict + '.json', 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', message)
+        s3_client.upload_file(tempfile + '.json', 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', message)
         break
     
