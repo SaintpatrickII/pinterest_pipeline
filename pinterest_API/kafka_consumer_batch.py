@@ -13,6 +13,7 @@ import tempfile
 import json
 
 from pydantic import Json
+from regex import F
 
 
 s3 = boto3.resource('s3')
@@ -66,15 +67,34 @@ producer = KafkaProducer(
 
 # producer.send('firstTopic', 'test message')
 # sleep(2)
-for message in consumer_batch:
-    print(message.value)
-    mes = str(message.value)
-    print(type(message))
-    print(type(mes))
-    with tempfile.TemporaryFile() as tmpfile:
-        f = tempfile.write(mes)
-        fs = f.read()
-        print(fs)
-        s3_client.upload_file(tempfile + '.json', 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', message)
+
+    # print(message.value)
+    # mes = lambda message : json.dumps(message).encode('utf-8')
+    
+
+with open(f"{uuid.uuid4()}.json", 'a') as f:
+    for message in consumer_batch:
+        print(type(message))
+        mes = str(message.value)
+        print(type(mes))
+        f.write(mes)
+        f.write('\n')
+        print(f)
+        print(type(f.name))
+        s3_client.upload_file(str(f.name), 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', str(f.name))
         break
+
+
+
+
+
+    # print(type(mes))
+    # mes = bytes(mes, 'utf-8')
+    # print(type(mes))
+    # with tempfile.TemporaryFile() as tmpfile:
+    #     f = tmpfile.write(mes)
+    #     # fs = f.read(f)
+    #     print(f)
+    #     s3_client.upload_file(str() + '.json', 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', message)
+    #     break
     
