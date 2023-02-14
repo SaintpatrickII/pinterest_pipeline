@@ -88,7 +88,11 @@ with open(f"{uuid.uuid4()}.json", 'w') as f:
             #     f.write('\n')
             # print(f)
             print(type(f.name))
-            s3_client.upload_file(str(f.name), 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', str(f.name))
+            # s3_client.upload_file(str(f.name), 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', str(f.name))
+            s3_client.put_object(Body=json.dumps(data),
+                                Bucket='pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9',
+                                Key=str(f.name)
+                                )
             data.clear()
             break
         # while len(data) >= 5:
