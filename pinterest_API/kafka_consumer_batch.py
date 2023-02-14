@@ -11,9 +11,8 @@ from botocore.exceptions import ClientError
 import os
 import tempfile
 import json
-
 from pydantic import Json
-from regex import F
+
 
 
 s3 = boto3.resource('s3')
@@ -71,18 +70,33 @@ producer = KafkaProducer(
     # print(message.value)
     # mes = lambda message : json.dumps(message).encode('utf-8')
     
-
-with open(f"{uuid.uuid4()}.json", 'a') as f:
+data = []
+with open(f"{uuid.uuid4()}.json", 'w') as f:
     for message in consumer_batch:
-        print(type(message))
-        mes = str(message.value)
-        print(type(mes))
-        f.write(mes)
-        f.write('\n')
-        print(f)
-        print(type(f.name))
-        s3_client.upload_file(str(f.name), 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', str(f.name))
-        break
+        
+        data.append(str(message.value))
+        # print(data)
+        if len(data) >= 5:
+            #  print(data)
+            # for item in data:
+                # f.write(item)
+                # f.write('\n')
+                # json.dump(item, f)
+            json.dump(data, f)
+            print(len(data))
+            # f.write(data)
+            #     f.write('\n')
+            # print(f)
+            print(type(f.name))
+            s3_client.upload_file(str(f.name), 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', str(f.name))
+            data.clear()
+            break
+        # while len(data) >= 5:
+        #     print(type(message))
+        #     mes = str(message.value)
+        #     print(type(mes))
+        #     
+        #     break
 
 
 
