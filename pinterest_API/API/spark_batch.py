@@ -3,6 +3,7 @@
 # findspark.init()
 import pyspark
 import multiprocessing
+import operator
 
 
 cfg = (
@@ -26,3 +27,17 @@ cfg = (
 session = pyspark.sql.SparkSession.builder.config(conf=cfg).getOrCreate()
 rddDistributedData = session.sparkContext.parallelize([1, 2, 3, 4, 5])
 print(rddDistributedData.collect())
+
+sc = session.sparkContext
+
+data = list(range(10,-11,-1))
+print(data)
+
+result = (
+    sc.parallelize(data)
+    .filter(lambda val: val % 3 == 0)
+    .map(operator.abs)
+    .fold(0, operator.add)
+)
+
+print(result)
