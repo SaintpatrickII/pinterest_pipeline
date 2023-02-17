@@ -71,23 +71,25 @@ producer = KafkaProducer(
     # mes = lambda message : json.dumps(message).encode('utf-8')
     
 data = []
-with open(f"{uuid.uuid4()}.json", 'w') as f:
+# with open(f"{uuid.uuid4()}.json", 'w') as f:
+with open("test.json", 'w') as f:
     for message in consumer_batch:
         
         data.append(str(message.value))
         # print(data)
-        if len(data) >= 5:
+        if len(data) >= 100:
             #  print(data)
             # for item in data:
                 # f.write(item)
                 # f.write('\n')
-                # json.dump(item, f)
-            json.dump(data, f)
+            json_not_binary = json.dump(data, f)
+            json_bin = json.dumps(json_not_binary, separators=(',', ':'), ensure_ascii=True)
             print(len(data))
             # f.write(data)
             #     f.write('\n')
             # print(f)
             print(type(f.name))
+            
             # s3_client.upload_file(str(f.name), 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', str(f.name))
             s3_client.put_object(Body=json.dumps(data),
                                 Bucket='pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9',
