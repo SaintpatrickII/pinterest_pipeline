@@ -14,4 +14,22 @@ Data engineering pipeline from pinterest API
 
 - the producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, this converts the incoming data (here a dictionary) into bytes, kafka loves bytes
 
-- within our api we utilise a post method to well... post or send data, here we are sending sata to the post method, this data is in the form of a dictionary, from here we use the produced.send method to transform this dictionary into bytes & specify the topic we want the message to be sent to
+- within our api we utilise a post method to well... post or send data, here we are sending data to the post method, this data is in the form of a dictionary, from here we use the produced.send method to transform this dictionary into bytes & specify the topic we want the message to be sent to
+
+- To utilise both batch & stream processing we create two different consumer files, while almost identical, with the batch consumer we can append incoming messages to a list, setup in a loop once a messaage count is reached this loop then sends the batch off
+
+3. Batch processing into data lake
+
+- Now we have the batch consumer mentioned above we need some file storage a S3 bucket is made for persistant storage, this will be communicated with spark later for data cleaning
+
+- Once the batch messsage criteria is met the batch consumer transfers the list into a json file utilising json.loads(), loads must be used to send the data to s3 in bytes format
+
+- Using boto3 & verifying credentials with AWS CLI we can send batched data into S3
+
+4. Processing batch data with Spark
+
+- This took ages to successfully integrate spark & Java, on macOS many issues come up
+
+- Homebrew is used as the main installer for both spark & java, both have to have an environmental variable setup in .zshrc file setting PATH to each, spark has to verify these under $SPARK_HOME and $JAVA_HOME 
+
+- This becomes very difficult with homebrew not initially providing direct PATHS that work with the env variables, https://maelfabien.github.io/bigdata/SparkInstall/ Is the only guide i found to successfully get this working after (a lot) of hours
