@@ -72,7 +72,7 @@ hadoopConf.set('spark.hadoop.fs.s3a.aws.credentials.provider', 'org.apache.hadoo
 s3_spark = SparkSession(sc_s3)
 
 
-df = s3_spark.read.option("multiLine", "true").option("mode", "PERMISSIVE").json("s3a://pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9/test.json")
+df = s3_spark.read.json("s3a://pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9/test.json", multiLine=True, mode='PERMISSIVE')
 df.show()
 
 #%%

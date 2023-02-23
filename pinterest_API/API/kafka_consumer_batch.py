@@ -35,9 +35,9 @@ admin_client = KafkaAdminClient(
 # )
 
 consumer_batch = KafkaConsumer(
-    'batchTopic',
+    'batchFinal',
     bootstrap_servers='localhost:9092',
-    value_deserializer=lambda x : dumps(x.decode('utf-8')),
+    value_deserializer=lambda x : loads(x),
     auto_offset_reset='earliest',
     max_poll_records=10,
     fetch_max_bytes=20,
@@ -49,19 +49,21 @@ consumer_batch = KafkaConsumer(
 
 
 # topic_list = []
-# topic_list.append(NewTopic(name='firstTopic', num_partitions=3, replication_factor=1))
+# topic_list.append(NewTopic(name='batchFinal', num_partitions=3, replication_factor=1))
 # topic_list.append(NewTopic(name='secondTopic', num_partitions=3, replication_factor=1))
 # topic_list.append(NewTopic(name='thirdTopic', num_partitions=3, replication_factor=1))
 
 # admin_client.create_topics(new_topics=topic_list)
 # # print(consumer.topics())
 
-# for message in consumer:
+# for message in consumer_batch:
 #     print(message.value)
+    # break
+
 
 producer = KafkaProducer(
     bootstrap_servers='localhost:9092',
-    value_serializer= lambda x : bytes(x, 'utf-8')
+    value_serializer= lambda v : bytes(v, 'ascii')
 )
 
 # producer.send('firstTopic', 'test message')
@@ -82,8 +84,7 @@ with open("test.json", 'w') as f:
             # for item in data:
                 # f.write(item)
                 # f.write('\n')
-            json_not_binary = json.dump(data, f)
-            json_bin = json.dumps(json_not_binary, separators=(',', ':'), ensure_ascii=True)
+            json_bin = json.dumps(data, separators=(',', ':'), ensure_ascii=True)
             print(len(data))
             # f.write(data)
             #     f.write('\n')
@@ -91,30 +92,9 @@ with open("test.json", 'w') as f:
             print(type(f.name))
             
             # s3_client.upload_file(str(f.name), 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', str(f.name))
-            s3_client.put_object(Body=json.dumps(data),
+            s3_client.put_object(Body=json.dumps(data, separators=(',', ':'), ensure_ascii=True),
                                 Bucket='pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9',
                                 Key=str(f.name)
                                 )
             data.clear()
             break
-        # while len(data) >= 5:
-        #     print(type(message))
-        #     mes = str(message.value)
-        #     print(type(mes))
-        #     
-        #     break
-
-
-
-
-
-    # print(type(mes))
-    # mes = bytes(mes, 'utf-8')
-    # print(type(mes))
-    # with tempfile.TemporaryFile() as tmpfile:
-    #     f = tmpfile.write(mes)
-    #     # fs = f.read(f)
-    #     print(f)
-    #     s3_client.upload_file(str() + '.json', 'pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9', message)
-    #     break
-    

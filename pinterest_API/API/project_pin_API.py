@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
-from json import dump
+from json import dumps
 from kafka import KafkaProducer
 import json
 
@@ -16,7 +16,7 @@ app = FastAPI()
 # value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
 producer = KafkaProducer(bootstrap_servers='localhost:9092',
-value_serializer=lambda v: bytes(str(v), 'utf-8')
+value_serializer=lambda v: dumps(v).encode('ascii')
 )
 
 class Data(BaseModel):
@@ -39,7 +39,7 @@ def get_db_row(item: Data):
     # print(data)
     # for k in data:
     #     producer.send('firstTopic', k)
-    producer.send('batchTopic', data)
+    producer.send('batchFinal', data)
     producer.send('streamTopic', data)
     return item
 
