@@ -35,7 +35,7 @@ admin_client = KafkaAdminClient(
 # )
 
 consumer_batch = KafkaConsumer(
-    'batchFinal',
+    'batchtest',
     bootstrap_servers='localhost:9092',
     value_deserializer=lambda x : loads(x),
     auto_offset_reset='earliest',
@@ -49,7 +49,7 @@ consumer_batch = KafkaConsumer(
 
 
 # topic_list = []
-# topic_list.append(NewTopic(name='batchFinal', num_partitions=3, replication_factor=1))
+# topic_list.append(NewTopic(name='batchtest', num_partitions=3, replication_factor=1))
 # topic_list.append(NewTopic(name='secondTopic', num_partitions=3, replication_factor=1))
 # topic_list.append(NewTopic(name='thirdTopic', num_partitions=3, replication_factor=1))
 
@@ -77,9 +77,9 @@ data = []
 with open("test.json", 'w') as f:
     for message in consumer_batch:
         
-        data.append(str(message.value))
+        data.append((message.value))
         # print(data)
-        if len(data) >= 100:
+        if len(data) >= 1:
             #  print(data)
             # for item in data:
                 # f.write(item)

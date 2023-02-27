@@ -39,7 +39,7 @@ def get_db_row(item: Data):
     # print(data)
     # for k in data:
     #     producer.send('firstTopic', k)
-    producer.send('batchFinal', data)
+    producer.send('batchtest', data)
     producer.send('streamTopic', data)
     return item
 
