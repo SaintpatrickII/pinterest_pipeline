@@ -10,7 +10,7 @@ import os
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StringType
 import pyspark.pandas as ps
-import pyspark.sql.functions as F
+from pyspark.sql.functions import *
 findspark.find()
 
 #%%
@@ -77,7 +77,8 @@ s3_spark = SparkSession(sc_s3)
 df = s3_spark.read.json("s3a://pinterest-data-a25f6b34-55e7-4a83-a1ef-4c02a809a2a9/test.json")
 # df = ps.DataFrame(df)
 cols_to_cast = ['category', 'unique_id', 'title', 'description', 'follower_count', 'tag_list', 'is_image_or_video', 'image_src', 'save_location']
-df = df.select([F.col(c).cast(StringType()) if c in cols_to_cast else c for c in df.columns])
+df = df.select([col(c).cast(StringType()) if c in cols_to_cast else c for c in df.columns])
+df = df.withColumn("tag_list",regexp_replace(col("tag_list"), ",", ""))
 df.show()
 df.printSchema()
 
