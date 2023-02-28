@@ -79,7 +79,7 @@ with open("test.json", 'w') as f:
         
         data.append((message.value))
         # print(data)
-        if len(data) >= 1:
+        if len(data) >= 50:
             #  print(data)
             # for item in data:
                 # f.write(item)
