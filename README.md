@@ -33,3 +33,14 @@ Data engineering pipeline from pinterest API
 - Homebrew is used as the main installer for both spark & java, both have to have an environmental variable setup in .zshrc file setting PATH to each, spark has to verify these under $SPARK_HOME and $JAVA_HOME 
 
 - This becomes very difficult with homebrew not initially providing direct PATHS that work with the env variables, https://maelfabien.github.io/bigdata/SparkInstall/ Is the only guide i found to successfully get this working after (a lot) of hours
+
+- Once spark is setup we have to setup spark to read in our saved json, firstly a os.environ arg is setup to link spark to AWS S3 via maven coodinates of both at the same versions we have
+
+- After this we can now setup a configuration, here we name our app (i like to think of this like an instance of spark) & add it to a sparkcontext method which in turn is added to a sparksession method to start our instance
+
+- Alongside this hadoop is utilised to perform the distributed computing we want (and is necessary to utilise pyspark), whereas pyspark is the RDD which computes transformations, here we add args to allow hadoop access to our s3 bucket via access and secret access keys set in an .env file, to note here all s3 methods utilise the s3a applications
+
+- Now we can simply load in our json using a direct filepath from the S3 bucket
+
+- Now all this is setup we 
+-  
