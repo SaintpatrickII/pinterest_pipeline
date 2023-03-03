@@ -56,9 +56,9 @@ Data engineering pipeline from pinterest API
 
 4. Some tag list have commas seperating every character, so this will be str replaced to remove these
 
-5. # are used at the beginning of tags, these will also be removed
+5. '#' are used at the beginning of tags, these will also be removed
 
-By the end of the data cleansing our schema will look as follows:
+# By the end of the data cleansing our schema will look as follows:
 
 <img width="1176" alt="Screenshot 2023-02-28 at 11 15 04" src="https://user-images.githubusercontent.com/92804317/222729140-5364c0ee-9215-4f22-866c-b5a7843f0a83.png">
 
