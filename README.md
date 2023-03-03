@@ -42,5 +42,25 @@ Data engineering pipeline from pinterest API
 
 - Now we can simply load in our json using a direct filepath from the S3 bucket
 
-- Now all this is setup we 
+- Now all this is setup we begin cleaning, before cleaning the json appears:
+
+<img width="1309" alt="Screenshot 2023-03-03 at 13 15 43" src="https://user-images.githubusercontent.com/92804317/222729486-359a9cc8-a7f3-4150-8cf7-ee7c2f81f3e5.png">
+
+- For this we have a few things to sort out:
+
+1. In our spark schema all records within string representaion are stored as objects, these will need to be cast into StringType and IntType
+
+2. our strings contain unicode characters (highlighted in light blue), a quick encode decode utf-8 will rid the table of these
+
+3. follower count if in thousand or million are represented with 'k' and 'M' respectfully, these will be converted into a integer value
+
+4. Some tag list have commas seperating every character, so this will be str replaced to remove these
+
+5. # are used at the beginning of tags, these will also be removed
+
+By the end of the data cleansing our schema will look as follows:
+
+<img width="1176" alt="Screenshot 2023-02-28 at 11 15 04" src="https://user-images.githubusercontent.com/92804317/222729140-5364c0ee-9215-4f22-866c-b5a7843f0a83.png">
+
 -  
+
