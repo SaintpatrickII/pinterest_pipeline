@@ -35,12 +35,15 @@ class Data(BaseModel):
 
 @app.post("/pin/")
 def get_db_row(item: Data):
-    data = dict(item)
-    # print(data)
-    # for k in data:
-    #     producer.send('firstTopic', k)
-    producer.send('batchtest', data)
-    producer.send('streamTopic', data)
+    batch = 0
+    while batch <=50:
+        data = dict(item)
+        # print(data)
+        # for k in data:
+        #     producer.send('firstTopic', k)
+        producer.send('batchtest', data)
+        producer.send('streamTopic', data)
+        batch += 1
     return item
 
 
