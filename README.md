@@ -19,6 +19,7 @@ Key Features:
 # 2. Kafka setup
 
 What is kafka: https://medium.com/event-driven-utopia/understanding-kafka-topic-partitions-ae40f80552e8
+
 Kafka Download: https://kafka.apache.org/downloads
 
 - For this I had installed the scala 2.12 version to avoid any compatibility issues .From here the file is stored as a compressed archive file in downloads,  in the console a quick change to 'cd Downloads' and 'tar -xf filename -C ~' to uncompress the file & move it to the home directory
