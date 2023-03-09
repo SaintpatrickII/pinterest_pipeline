@@ -40,27 +40,34 @@ Kafka Download: https://kafka.apache.org/downloads
 
 - Thankfully kafka has a python based module this kafka-python is utilised, in order to create our pipeline we need a producer (sends data stream/ writes data) and a consumer (used to access data/ read data), as for now installs are as easy as 'pip3 install kafka-python', later we will see this gets ALOT harder
 
-- Although we have a server we need to create a topic, this topic is just simply the name for a data injestion category i.e. pinterestDataStreaming or pinterestBatch, to create these we can create a empty topic list, append to it some new topics & them push that to the kafka admin client to create
+- Before we can create any topics we need an admin client in order to communicate with kafka, for this all we need are the bootstrap_server & a name for our client
+- 
+<img width="283" alt="Screenshot 2023-03-09 at 16 35 02" src="https://user-images.githubusercontent.com/92804317/224091358-a839e4ff-9e51-4c51-a0ab-ef01874700d1.png">
+
+- Although we have a server we need to create a topic, this topic is just simply the name for a data injestion category i.e. pinterestDataStreaming or pinterestBatch, to create these we can create a empty topic list, append to it some new topics & them push that to the kafka admin client to create. here partitions are the amount of smaller storage units that hold messages within a kafka topic
 
 <img width="568" alt="Screenshot 2023-03-09 at 15 48 35" src="https://user-images.githubusercontent.com/92804317/224077877-4619d19b-b2d7-48d2-9c98-02340a905168.png">
 
 <img width="568" alt="Screenshot 2023-03-09 at 15 16 40" src="https://user-images.githubusercontent.com/92804317/224078064-f5941bbe-6290-4858-b23f-6dcc6f034e5b.png">
 
-- the producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, this converts the incoming data (here a dictionary) into bytes, kafka loves bytes
+- the producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, this converts the incoming data (here a dictionary) str representaion, originally i had encoded into a bytes array however when decoding this leads to alot of escaped unicode characters which are (awful) to deal with.
 
-- within our api we utilise a post method to well... post or send data, here we are sending data to the post method, this data is in the form of a dictionary, from here we use the produced.send method to transform this dictionary into bytes & specify the topic we want the message to be sent to
+- the producer we created acts like a basic python class where we call the .send method taking in ('topic', datapoint) as args, so in this code for every POST request made it will be sent to both the batch & streaming topics
 
-- To utilise both batch & stream processing we create two different consumer files, while almost identical, with the batch consumer we can append incoming messages to a list, setup in a loop once a messaage count is reached this loop then sends the batch off
+<img width="568" alt="Screenshot 2023-03-09 at 15 51 42" src="https://user-images.githubusercontent.com/92804317/224078743-f0db661e-ba4b-49e7-9adb-4f18f70d3e17.png">
 
-3. Batch processing into data lake
 
-- Now we have the batch consumer mentioned above we need some file storage a S3 bucket is made for persistant storage, this will be communicated with spark later for data cleaning
+# 3. Batch processing into data lake
+
+- Now we have the batch consumer mentioned above we need some file storage, a S3 bucket is made for persistant storage. This will be communicated with spark later for data cleaning
+
+- a S3 bucket is created & access keys generated, these are specified using AWS CLI & stored in .env file to be referenced in code (not today hackers) 
 
 - Once the batch messsage criteria is met the batch consumer transfers the list into a json file utilising json.loads(), loads must be used to send the data to s3 in bytes format
 
 - Using boto3 & verifying credentials with AWS CLI we can send batched data into S3
 
-4. Processing batch data with Spark
+# 4. Processing batch data with Spark
 
 - This took ages to successfully integrate spark & Java, on macOS many issues come up
 
