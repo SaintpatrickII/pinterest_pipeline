@@ -1,5 +1,6 @@
 # %%
 from ensurepip import bootstrap
+from lib2to3.pgen2 import pgen
 from sys import api_version
 from grpc import protos_and_services
 from kafka import KafkaConsumer, KafkaAdminClient, KafkaProducer
@@ -11,8 +12,10 @@ import multiprocessing
 import pyspark
 from pyspark.streaming import StreamingContext
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 import os
-
+import json
 findspark.init()
 findspark.find()
 # %%
@@ -42,15 +45,58 @@ spark = SparkSession \
     .appName('kafkaStreaming')\
     .getOrCreate()
 
+# spark_postgres = SparkSession.builder.config("spark.jars", "/usr/local/postgresql-42.5.4.jar") \
+#     .master ("local") \
+#     .appName ("PySparkPostgres") \
+#     .getOrCreate()
+
+cols_to_cast_str = ['category']
+cols_to_cast_int = ['unique_id',  'follower_count', 'downloaded']
+
+
+
+cols_to_cast = ['category', 'unique_id', 'title', 'description', 'follower_count', 'tag_list', 'is_image_or_video', 'image_src', 'save_location', 'downloaded']
+schema = StructType([ 
+        StructField("category", StringType(), True),
+        StructField("follower_count" , StringType(), True),
+        StructField("downloaded" , StringType(), True),
+        StructField("unique_id" , StringType(), True),
+        ])
+
+
 stream_df = spark \
     .readStream \
     .format('kafka') \
     .option('kafka.bootstrap.servers', bootstrap_stream) \
     .option('subscribe', stream_topic_name) \
     .option('startingOffsets', 'earliest') \
-    .load()
+    .load() \
+    .select(from_json(col("value").cast("string"), schema).alias("parsed_value")) \
+    .select(col("parsed_value.*")) \
 
-stream_df.writeStream.outputMode('append').format('console').start().awaitTermination()   
+stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_count"), "k", "000"))
+stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_count"), "M", "000000"))
+
+postgres_ps = os.environ['POSTGRES_PASSOWRD']
+
+# pg = spark_postgres.write \
+#     .format("jdbc") \
+#     .option("url", "jdbc:postgresql://localhost:5432/pinterest_streaming") \
+#     .option("dbtable", "tablename") \
+#     .option("user", "postgres") \
+#     .option("password", postgres_ps) \
+#     .option("driver", "org.postgresql.Driver") \
+#     .save()
+
+stream_df.printSchema()
+
+
+stream_df = stream_df.select('*')
+# stream_df = stream_df \
+#     .selectExpr("CAST(value AS STRING) as json")
+
+ds = stream_df.writeStream.outputMode('append').format('console').start().awaitTermination()   
+
 
 
 
@@ -115,8 +161,8 @@ producer = KafkaProducer(
 
 # producer.send('firstTopic', 'test message')
 # sleep(2)
-for message in consumer_stream:
-    print(message.value)
+# for message in consumer_stream:
+#     print(message.value)
     
 
 # for message in consumer_batch:
