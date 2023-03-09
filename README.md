@@ -40,10 +40,6 @@ Kafka Download: https://kafka.apache.org/downloads
 
 - Thankfully kafka has a python based module this kafka-python is utilised, in order to create our pipeline we need a producer (sends data stream/ writes data) and a consumer (used to access data/ read data), as for now installs are as easy as 'pip3 install kafka-python', later we will see this gets ALOT harder
 
-- Before we can create any topics we need an admin client in order to communicate with kafka, for this all we need are the bootstrap_server & a name for our client
-- 
-<img width="283" alt="Screenshot 2023-03-09 at 16 35 02" src="https://user-images.githubusercontent.com/92804317/224091358-a839e4ff-9e51-4c51-a0ab-ef01874700d1.png">
-
 - Although we have a server we need to create a topic, this topic is just simply the name for a data injestion category i.e. pinterestDataStreaming or pinterestBatch, to create these we can create a empty topic list, append to it some new topics & them push that to the kafka admin client to create. here partitions are the amount of smaller storage units that hold messages within a kafka topic
 
 <img width="568" alt="Screenshot 2023-03-09 at 15 48 35" src="https://user-images.githubusercontent.com/92804317/224077877-4619d19b-b2d7-48d2-9c98-02340a905168.png">
@@ -59,13 +55,14 @@ Kafka Download: https://kafka.apache.org/downloads
 
 # 3. Batch processing into data lake
 
-- Now we have the batch consumer mentioned above we need some file storage, a S3 bucket is made for persistant storage. This will be communicated with spark later for data cleaning
+- Now we have the batch consumer mentioned above we need some file storage, a S3 bucket is made for persistant storage. This will be communicated with spark later for data cleaning, here boto3 is utilised as the service required to send data to S3 via python scripts
 
-- a S3 bucket is created & access keys generated, these are specified using AWS CLI & stored in .env file to be referenced in code (not today hackers) 
+- Access keys are generated, these are specified using AWS CLI & stored in .env file to be referenced in code (not today hackers) 
 
-- Once the batch messsage criteria is met the batch consumer transfers the list into a json file utilising json.loads(), loads must be used to send the data to s3 in bytes format
+- Once the batch messsage criteria is met the batch consumer transfers the list into a json file utilising json.loads(), loads must be used to send the data to S3 as loads deserialises the str(json) we dumped before in the value serializer
 
-- Using boto3 & verifying credentials with AWS CLI we can send batched data into S3
+<img width="652" alt="Screenshot 2023-03-09 at 16 44 46" src="https://user-images.githubusercontent.com/92804317/224094358-274fa71b-30de-4bf9-a042-01b837d7184d.png">
+
 
 # 4. Processing batch data with Spark
 
