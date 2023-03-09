@@ -16,15 +16,31 @@ Key Features:
 - Postgres to contain cleaned results in SQL friendly format ready for analysis
 
 
-2. Kafka setup
+# 2. Kafka setup
 
-- by looking through the server.properties file within kafka/config we can see the correct port to be 9092
+What is kafka: https://medium.com/event-driven-utopia/understanding-kafka-topic-partitions-ae40f80552e8
+Kafka Download: https://kafka.apache.org/downloads
+
+- For this I had installed the scala 2.12 version to avoid any compatibility issues .From here the file is stored as a compressed archive file in downloads,  in the console a quick change to 'cd Downloads' and 'tar -xf filename -C ~' to uncompress the file & move it to the home directory
+
+- by looking through the server.properties file within kafka/config/server_properties we can see the correct port to be 9092 as shown below, this will be the 'bootstrap_server' we connect to with Kafka, note here when referencing in code this is actually 'localhost:9092'
+
+<img width="911" alt="Screenshot 2023-03-09 at 14 59 39" src="https://user-images.githubusercontent.com/92804317/224064081-f3bec1c8-8968-4d00-a07c-974d603b06cc.png">
 
 - In kafkas current build it is impossible to run without the zookeeper, the zookeeper is responsible for brokers (servers) & partitions/leader elections
 
-- so before we start coding up we setup our kafka zookeeper within the binary folder of kafka, here we use bash to start the zookeeper server connected to our zookeeper.properties file within the config folder, the same is done with the binary server-start linked to the config server.properties
+- so before we start coding up we setup our kafka zookeeper within the binary folder of kafka, here we use bash to start the zookeeper server connected to our zookeeper.properties file within the config folder, the same is done with the binary server-start linked to the config server.properties again as shown below
+- 
+<img width="1013" alt="Screenshot 2023-03-09 at 15 04 49" src="https://user-images.githubusercontent.com/92804317/224065748-57dd7660-297b-4357-a0cf-9385684685fb.png">
 
-- for this kafka-python is utilised, in order to create our pipeline we need a producer (sends data stream/ writes data) and a consumer (used to access data/ read data)
+<img width="1013" alt="Screenshot 2023-03-09 at 15 05 54" src="https://user-images.githubusercontent.com/92804317/224065805-ff91102b-3f8a-487c-bc3a-fb67adf5e4c1.png">
+
+- We now have an active Kafka server, but it has no idea what data to collect... lets fix that
+
+- Thankfully kafka has a python based module this kafka-python is utilised, in order to create our pipeline we need a producer (sends data stream/ writes data) and a consumer (used to access data/ read data), as for now installs are as easy as 'pip3 install kafka-python', later we will see this gets ALOT harder
+
+- Although we have a server we need to create a topic, this topic is just simply the name for a data injestion category i.e. pinterestDataStreaming or pinterestBatch, to create these we can create a empty topic list, append to it some new topics & them push that to the kafka admin client to create
+
 
 - the producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, this converts the incoming data (here a dictionary) into bytes, kafka loves bytes
 
