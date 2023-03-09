@@ -42,6 +42,10 @@ Kafka Download: https://kafka.apache.org/downloads
 
 - Although we have a server we need to create a topic, this topic is just simply the name for a data injestion category i.e. pinterestDataStreaming or pinterestBatch, to create these we can create a empty topic list, append to it some new topics & them push that to the kafka admin client to create
 
+<img width="568" alt="Screenshot 2023-03-09 at 15 48 35" src="https://user-images.githubusercontent.com/92804317/224077877-4619d19b-b2d7-48d2-9c98-02340a905168.png">
+
+
+<img width="1013" alt="Screenshot 2023-03-09 at 15 04 49" src="https://user-images.githubusercontent.com/92804317/224077717-0206398d-5b8e-405b-9e23-dbc9a448ed77.png">
 
 - the producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, this converts the incoming data (here a dictionary) into bytes, kafka loves bytes
 
