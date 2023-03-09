@@ -84,10 +84,19 @@ Java installation: https://www.java.com/en/download/
 
 <img width="563" alt="Screenshot 2023-03-09 at 17 09 49" src="https://user-images.githubusercontent.com/92804317/224104732-65d64be5-74df-41b2-a9e6-7d8643b55161.png">
 
+once in a new python file we can import findspark & run findspark.find() which will return our spark path, to double check spark is working in the console we can run spark -shell
+
+<img width="820" alt="Screenshot 2023-03-09 at 17 28 11" src="https://user-images.githubusercontent.com/92804317/224107514-24b28a63-40c2-4adc-b4b3-75f07c31cc24.png">
 
 - Once spark is setup we have to setup spark to read in our saved json, firstly a os.environ arg is setup to link spark to AWS S3 via maven coodinates of both at the same versions we have
 
-- After this we can now setup a configuration, here we name our app (i like to think of this like an instance of spark) & add it to a sparkcontext method which in turn is added to a sparksession method to start our instance
+- what is a maven coordinate? Spark itself cannot access or send data to different destinations i.e. cloud services by itself, we need 'spark connectors', the maven repository contains the necessary coordinates to interact with these different services, we have to tell spark how to find these
+
+- for our project we need to pass PYSPARK_SUBMIT_ARGS to update maven coordinates for the aws-java-sdk and hadoop-aws
+-
+<img width="846" alt="Screenshot 2023-03-09 at 17 42 02" src="https://user-images.githubusercontent.com/92804317/224111007-9e8f74c2-2a78-4c92-9247-4e6c0f42e782.png">
+
+- After this we can now setup a configuration, here we name our app (i like to think of this like an instance of spark) & add it to a sparkcontext method which creates a connection to spark with our configuration which in turn is added to a sparksession method to start our instance
 
 - Alongside this hadoop is utilised to perform the distributed computing we want (and is necessary to utilise pyspark), whereas pyspark is the RDD which computes transformations, here we add args to allow hadoop access to our s3 bucket via access and secret access keys set in an .env file, to note here all s3 methods utilise the s3a applications
 
@@ -113,7 +122,4 @@ Java installation: https://www.java.com/en/download/
 
 <img width="1176" alt="Screenshot 2023-02-28 at 11 15 04" src="https://user-images.githubusercontent.com/92804317/222729140-5364c0ee-9215-4f22-866c-b5a7843f0a83.png">
 
-
-https://sandeepkattepogu.medium.com/python-spark-transformations-on-kafka-data-8a19b498b32c
--  
 
