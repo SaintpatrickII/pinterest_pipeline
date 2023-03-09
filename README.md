@@ -44,8 +44,7 @@ Kafka Download: https://kafka.apache.org/downloads
 
 <img width="568" alt="Screenshot 2023-03-09 at 15 48 35" src="https://user-images.githubusercontent.com/92804317/224077877-4619d19b-b2d7-48d2-9c98-02340a905168.png">
 
-
-<img width="1013" alt="Screenshot 2023-03-09 at 15 04 49" src="https://user-images.githubusercontent.com/92804317/224077717-0206398d-5b8e-405b-9e23-dbc9a448ed77.png">
+<img width="568" alt="Screenshot 2023-03-09 at 15 16 40" src="https://user-images.githubusercontent.com/92804317/224078064-f5941bbe-6290-4858-b23f-6dcc6f034e5b.png">
 
 - the producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, this converts the incoming data (here a dictionary) into bytes, kafka loves bytes
 
