@@ -22,7 +22,7 @@ What is kafka: https://medium.com/event-driven-utopia/understanding-kafka-topic-
 
 Kafka Download: https://kafka.apache.org/downloads
 
-- For this I had installed the scala 2.12 version to avoid any compatibility issues .From here the file is stored as a compressed archive file in downloads,  in the console a quick change to 'cd Downloads' and 'tar -xf filename -C ~' to uncompress the file & move it to the home directory
+- For this I had installed the scala 2.12 version (via spark) to avoid any compatibility issues .From here the file is stored as a compressed archive file in downloads,  in the console a quick change to 'cd Downloads' and 'tar -xf filename -C ~' to uncompress the file & move it to the home directory
 
 - by looking through the server.properties file within kafka/config/server_properties we can see the correct port to be 9092 as shown below, this will be the 'bootstrap_server' we connect to with Kafka, note here when referencing in code this is actually 'localhost:9092'
 
@@ -66,11 +66,24 @@ Kafka Download: https://kafka.apache.org/downloads
 
 # 4. Processing batch data with Spark
 
-- This took ages to successfully integrate spark & Java, on macOS many issues come up
+Spark installation: https://spark.apache.org/downloads.html
 
-- Homebrew is used as the main installer for both spark & java, both have to have an environmental variable setup in .zshrc file setting PATH to each, spark has to verify these under $SPARK_HOME and $JAVA_HOME 
+Java installation: https://www.java.com/en/download/
 
-- This becomes very difficult with homebrew not initially providing direct PATHS that work with the env variables, https://maelfabien.github.io/bigdata/SparkInstall/ Is the only guide i found to successfully get this working after (a lot) of hours
+- This took ages to successfully integrate spark & Java, on macOS many issues come up so i will try to streamline this here, homebrew can work but many issues arise from some java versions being incompatible to homebrew not providing physical filepaths so we will install both locally :)
+
+- Java 1.8 was utilised as my java version, spark itself is installed & immediatly sent to a spark folder created within my user folder in this case '/Users/paddy/spark/spark-3.3.1-bin-hadoop3', spark when installed also installs a compatible scala version 
+
+- Two variables must be set in order for java & spark to find each other, $SPARK_HOME and $JAVA_HOME.
+
+- Both of these are within a hidden file within the home directory, for mac this is called .zshrc, or on most other systems .bashrc, to gain access to this we 'cd ~' to return to home directory then 'ls -a', the -a flag reveals hidden files & from here 'nano .zshrc' to ammend these new filepaths
+- 
+<img width="763" alt="Screenshot 2023-03-09 at 17 15 30" src="https://user-images.githubusercontent.com/92804317/224104680-a0747de9-e6fb-49ce-abcf-83dc63da4156.png">
+
+- to find filepath & version of java installed, use commands below
+
+<img width="563" alt="Screenshot 2023-03-09 at 17 09 49" src="https://user-images.githubusercontent.com/92804317/224104732-65d64be5-74df-41b2-a9e6-7d8643b55161.png">
+
 
 - Once spark is setup we have to setup spark to read in our saved json, firstly a os.environ arg is setup to link spark to AWS S3 via maven coodinates of both at the same versions we have
 
