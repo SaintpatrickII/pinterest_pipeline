@@ -122,4 +122,21 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 <img width="1176" alt="Screenshot 2023-02-28 at 11 15 04" src="https://user-images.githubusercontent.com/92804317/222729140-5364c0ee-9215-4f22-866c-b5a7843f0a83.png">
 
+# 5. Orchestrate batch processing using airflow
+
+
+# 6. Spark Streaming
+
+- Streaming alike batch begins with setting a SparkSession however we now have to set our spark to read the stream, to do thus we need the bootstrap, topic name ( to subscribe to the topic), & we want to load the stream  from here thanks to sparks RDD integration we can call the function like a dataframe to append with no issues
+
+- Notice here we did some minor feature selection in only cleaning some of the data, for this i simply chose: category, follower_count, downloaded for an easy model if we were to train it
+
+<img width="799" alt="Screenshot 2023-03-09 at 18 09 30" src="https://user-images.githubusercontent.com/92804317/224117129-f7a57071-6e3e-4bbe-860e-fff58ce6cc4c.png">
+
+
+<img width="602" alt="Screenshot 2023-03-09 at 12 42 25" src="https://user-images.githubusercontent.com/92804317/224117212-87951cb8-04ab-4b94-b6e6-94a6bad29477.png">
+
+# 7. Storage
+
+Using postgres we now create a new database titlied 'pinterest_streaming' & a table 'experimental_data' where we will stream this data to
 
