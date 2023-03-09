@@ -1,5 +1,19 @@
 # pinterest_pipeline
-Data engineering pipeline from pinterest API
+
+# 1. Project brief
+The aim of this project is to create a Data engineering pipeline mimicing data from pinterest. The project begins with a preset API endpoint with a looping dataset which POST's into the api. From here it's our job to ingest this data to kafka topics, this data must then be cleaned & transformed into a usable dataframes utilising PySpark in both batch & streaming. From here the cleaned dataframes will be moved to permanent storage within AWS S3, the batch processing will be automated with Airflow for daily updates via cronjobs & the streaming data must be appended to a postgres table suitible for SQL based analysis
+
+Key Features:
+
+- Pipeline focusses on data clensing utilising kafka for data ingestion
+
+- PySpark for both batch processing & stream processing
+
+- S3 for data storage
+
+- Airflow for batch automation
+
+- Postgres to contain cleaned results in SQL friendly format ready for analysis
 
 
 2. Kafka setup
