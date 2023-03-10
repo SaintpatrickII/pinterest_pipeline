@@ -7,14 +7,6 @@ import json
 
 app = FastAPI()
 
-# producer = KafkaProducer(
-#     bootstrap_servers='localhost:9092',
-#     value_serializer= lambda x : str(x, 'utf-8')
-# )
-
-# producer = KafkaProducer(bootstrap_servers='localhost:9092',
-# value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-
 producer = KafkaProducer(bootstrap_servers='localhost:9092',
 value_serializer=lambda v: dumps(v).encode('ascii')
 )
