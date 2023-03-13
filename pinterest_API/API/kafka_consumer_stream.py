@@ -87,7 +87,7 @@ def _write_streaming(
 ) -> None:         
 
     df.write \
-        .mode('append') \
+        .mode('update') \
         .format("jdbc") \
         .option("url", "jdbc:postgresql://localhost:5432/pinterest_streaming") \
         .option("driver", "org.postgresql.Driver") \
