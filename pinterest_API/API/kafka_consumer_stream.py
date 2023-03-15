@@ -27,8 +27,9 @@ spark_path = '/Users/paddy/spark/spark-3.3.1-bin-hadoop3' # spark installed fold
 sys.path.insert(0, spark_path + "/python/lib/py4j-0.10.9.5-src.zip")
 # %%
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.13:3.3.1,org.apache.spark:spark-sql_2.13:3.3.1,org.postgresql:postgresql:42.3.3 pyspark-shell'
-os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,org.postgresql:postgresql:42.2.10 pyspark-shell'
-# os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,com.zaxxer:HikariCP:3.3.1 pyspark-shell'
+# os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.13:3.3.1,org.postgresql:postgresql:42.2.10 pyspark-shell'
+
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 pyspark-shell'
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
@@ -84,7 +85,8 @@ stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_c
 #     properties = {"user": "postgres", "password": postgres_ps, "driver": "org.postgresql.Driver"}
 #     df.write.jdbc(url=url, table="experimental_data", mode="append", properties=properties)
 
-# # ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
+ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
+#%%
 # stream_df.writeStream.format("jdbc").foreachBatch(foreach_batch_function).outputMode('update').format('console').start().awaitTermination() 
 
 
