@@ -19,15 +19,23 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 import os
 import json
 import sys
-# spark_path = '/Users/paddy/spark/spark-3.3.1-bin-hadoop3' # spark installed folder
+spark_path = '/Users/paddy/spark/spark-3.3.1-bin-hadoop3' # spark installed folder
 # os.environ['SPARK_HOME'] = spark_path
 # sys.path.insert(0, spark_path + "/bin")
-# sys.path.insert(0, spark_path + "/python/pyspark/")
+# sys.path.insert(0, spark_path + "/python/lib/")
 # sys.path.insert(0, spark_path + "/python/lib/pyspark.zip")
-# sys.path.insert(0, spark_path + "/python/lib/py4j-0.10.9.5-src.zip")
+sys.path.insert(0, spark_path + "/python/lib/py4j-0.10.9.5-src.zip")
 # %%
-os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1,org.postgresql:postgresql:42.2.10 pyspark-shell'
-postgres_ps = os.environ['POSTGRES_PASSWORD']
+# os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.13:3.3.1,org.apache.spark:spark-sql_2.13:3.3.1,org.postgresql:postgresql:42.3.3 pyspark-shell'
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,org.postgresql:postgresql:42.2.10 pyspark-shell'
+# os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,com.zaxxer:HikariCP:3.3.1 pyspark-shell'
+
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+# com.zaxxer:HikariCP:3.3.1
+# postgres_ps = os.environ['POSTGRES_PASSWORD']
+postgres_ps = os.environ.get('POSTGRESS_PASSWORD')
+
            
         
 

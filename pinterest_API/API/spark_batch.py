@@ -12,7 +12,9 @@ from pyspark.sql.types import StringType, IntegerType
 import pyspark.pandas as ps
 from pyspark.sql.functions import *
 findspark.find()
-
+import os
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages com.amazonaws:aws-java-sdk-s3:1.12.196,org.apache.hadoop:hadoop-aws:3.3.1 pyspark-shell'
 
 S3_config = (
@@ -21,15 +23,17 @@ S3_config = (
 
 )
 
+AWS_KEY = os.environ.get("AWS_ACCESS_KEY")
+AWS_SECRET = os.environ.get("AWS_SECRET_KEY")
 
 
 sc_s3 = pyspark.SparkContext(conf=S3_config)
 
-accessKeyId=os.environ['AWS_ACCESS_KEY']
-secretAccessKey=os.environ['AWS_SECRET_KEY']
+# accessKeyId=os.environ.get('AWS_ACCESS_KEY')
+# secretAccessKey=os.environ.get('AWS_SECRET_KEY')
 hadoopConf = sc_s3._jsc.hadoopConfiguration()
-hadoopConf.set('fs.s3a.access.key', accessKeyId)
-hadoopConf.set('fs.s3a.secret.key', secretAccessKey)
+hadoopConf.set('fs.s3a.access.key', AWS_KEY)
+hadoopConf.set('fs.s3a.secret.key', AWS_SECRET)
 hadoopConf.set('spark.hadoop.fs.s3a.aws.credentials.provider', 'org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider')
 
 
