@@ -162,8 +162,9 @@ once in a new python file we can import findspark & run findspark.find() which w
 - Since we are reading in the stream of data we need a schema which defines column names for all of our colums, this is made by creating an array of 'StructFields' which also define data type & if nullable
 
 - Our instance of spark needs some additional arguements to configure reading a kafka stream including subscribing to topic to be able to read it, what format spark is streaming from, & what mode we're using (here we just want to load the datastream)
-- 
-<img width="802" alt="Screenshot 2023-03-16 at 10 33 12" src="https://user-images.githubusercontent.com/92804317/225597538-2a46af5e-d174-404d-9e7c-fc05e65e03b5.png">
+
+<img width="658" alt="Screenshot 2023-03-16 at 11 01 08" src="https://user-images.githubusercontent.com/92804317/225598481-cec79cf2-b0cd-4f0f-b306-79cdb75bf093.png">
+
 
 - Thanks to spark being pretty cool we can treat this instance of spark as a dataframe variable & directly apply transformations to it, here we are exploding the json to give every element (datapoint) in the json its own row as well as applying the schema as column names, alongside doing some quick data transformation on our follower_count column
 
