@@ -157,7 +157,16 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 # 6. Spark Streaming
 
-- Streaming alike batch begins with setting a SparkSession however we now have to set our spark to read the stream, to do thus we need the bootstrap, topic name ( to subscribe to the topic), & we want to load the stream  from here thanks to sparks RDD integration we can call the function like a dataframe to append with no issues
+- Streaming alike batch begins with setting a SparkSession however we now have to set our spark to read the stream, to do this we need the bootstrap, topic name ( to subscribe to the topic), & we want to load the stream
+
+- Since we are reading in the stream of data we need a schema which defines column names for all of our colums, this is made by creating an array of 'StructFields' which also define data type & if nullable
+
+- Our instance of spark needs some additional arguements to configure reading a kafka stream including subscribing to topic to be able to read it, what format spark is streaming from, & what mode we're using (here we just want to load the datastream)
+- 
+<img width="802" alt="Screenshot 2023-03-16 at 10 33 12" src="https://user-images.githubusercontent.com/92804317/225597538-2a46af5e-d174-404d-9e7c-fc05e65e03b5.png">
+
+- Thanks to spark being pretty cool we can treat this instance of spark as a dataframe variable & directly apply transformations to it, here we are exploding the json to give every element (datapoint) in the json its own row as well as applying the schema as column names, alongside doing some quick data transformation on our follower_count column
+
 
 - Notice here we did some minor feature selection in only cleaning some of the data, for this i simply chose: category, follower_count, downloaded for an easy model if we were to train it
 
