@@ -157,6 +157,13 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 # 6. Spark Streaming
 
+
+- Spark like before has no inbuilt method functionality to read kafka streams, these have to be added to 'PYSPARK_SUBMIT_ARGS' when we run our code, good thing we have maven, here we need to find a version of spark-sql-kafka which fits our installed spark as this will allow spark to communicate with kafka
+
+![Screenshot 2023-03-16 at 09 43 52](https://user-images.githubusercontent.com/92804317/225600235-85960a5b-f630-4a2f-b0b0-79303cde0745.png)
+
+so before we begin coding the stream we add the line 'os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 pyspark-shell'
+
 - Streaming alike batch begins with setting a SparkSession however we now have to set our spark to read the stream, to do this we need the bootstrap, topic name ( to subscribe to the topic), & we want to load the stream
 
 - Since we are reading in the stream of data we need a schema which defines column names for all of our colums, this is made by creating an array of 'StructFields' which also define data type & if nullable
