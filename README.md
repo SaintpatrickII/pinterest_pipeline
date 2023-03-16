@@ -124,6 +124,36 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 # 5. Orchestrate batch processing using airflow
 
+- Airflow is a task scheduler & monitoring tool utilised heavily for managing automated tasks, For this instance we want to create a workflow that simply consumes new kafka messages to upload to S3 & then batch processes the updated results using pyspark
+
+- Airflow creates workflows via DAG's (Directed Acyclic Graphs), this allows tasks to be completed based on prerequisite tasks i.e. 'only perform taask b is task a has succeded'
+
+- Once Airflow is installed & the Airflow folder created in the home directory these DAG's are stored within the 'dags' folder within the airflow directory, if we look in the airflow.cfg we can see that this is the default path airflow will look for jobs/dags once run
+
+<img width="642" alt="Screenshot 2023-03-16 at 10 22 30" src="https://user-images.githubusercontent.com/92804317/225587870-d371f18a-da7e-4ae1-aa19-deca552eff38.png">
+
+- DAG's can be created using python scripting (Within the dags folder!) & utilise bashOperators to move through directories & execute commands, default_args are used to sign into airflow from the local system
+
+- a DAG class is created taking in user login information as an arg, aslo in these args jobs can be scheduled utilising cronjobs labeled 'schedule_interval' arguement, for this we want the job to schedule everyday at midday so '0 12 * * *' by using https://crontab.guru
+
+<img width="802" alt="Screenshot 2023-03-16 at 10 33 12" src="https://user-images.githubusercontent.com/92804317/225590669-1c167199-6385-494d-bd00-7144a71a84b1.png">
+
+- For airflow's UI to be visible we need to assign it to a port using 'airflow webserver --port 8080' to allow a localhost:8080 connection, then running 'airflow scheduler' will allow refreshing of DAG code
+
+# Lets create a few basic commands:
+
+<img width="802" alt="Screenshot 2023-03-16 at 10 33 12" src="https://user-images.githubusercontent.com/92804317/225591862-50a520e6-67f8-4365-8262-e812898e5fbf.png">
+
+-Here we are simply running both our kafka batch upload to S3 file & then running the file for cleaning said S3 data with pyspark
+
+- If we look at airlow we can see the progress of jobs, a graph view of task ordering & also the code which airflow is using for the DAG
+
+![Screenshot 2023-03-16 at 10 31 56](https://user-images.githubusercontent.com/92804317/225592488-9ac63077-797f-4915-bcf0-7c152c3c4ba9.png)
+
+![Screenshot 2023-03-16 at 10 31 44](https://user-images.githubusercontent.com/92804317/225592528-0ce7016f-8ba1-4590-b076-7d1521d46311.png)
+
+![Screenshot 2023-03-16 at 10 32 34](https://user-images.githubusercontent.com/92804317/225592579-708e995d-2a79-42d9-b0eb-270809c6d054.png)
+
 
 # 6. Spark Streaming
 
