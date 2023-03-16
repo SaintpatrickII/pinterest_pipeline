@@ -171,10 +171,12 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 - Notice here we did some minor feature selection in only cleaning some of the data, for this i simply chose: category, follower_count, downloaded for an easy model if we were to train it
 
-<img width="799" alt="Screenshot 2023-03-09 at 18 09 30" src="https://user-images.githubusercontent.com/92804317/224117129-f7a57071-6e3e-4bbe-860e-fff58ce6cc4c.png">
+before we run the file we have to also start the stream as pyspark will not do this automatically, we have to pass a long arguement of writing the stream from our dataframe, fomat it to the console in order to print it to console, start the stream & then end the stream whenever the user stops the program
 
+<img width="692" alt="Screenshot 2023-03-16 at 11 09 14" src="https://user-images.githubusercontent.com/92804317/225599570-4893aa48-edec-4d1c-ad92-5fa7bef4fdeb.png">
 
 <img width="602" alt="Screenshot 2023-03-09 at 12 42 25" src="https://user-images.githubusercontent.com/92804317/224117212-87951cb8-04ab-4b94-b6e6-94a6bad29477.png">
+
 
 # 7. Storage
 
