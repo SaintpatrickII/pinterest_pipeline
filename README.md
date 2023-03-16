@@ -126,7 +126,7 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 - Airflow is a task scheduler & monitoring tool utilised heavily for managing automated tasks, For this instance we want to create a workflow that simply consumes new kafka messages to upload to S3 & then batch processes the updated results using pyspark
 
-- Airflow creates workflows via DAG's (Directed Acyclic Graphs), this allows tasks to be completed based on prerequisite tasks i.e. 'only perform taask b is task a has succeded'
+- Airflow creates workflows via DAG's (Directed Acyclic Graphs), this allows tasks to be completed based on prerequisite tasks i.e. 'only perform task B is task A has succeded'
 
 - Once Airflow is installed & the Airflow folder created in the home directory these DAG's are stored within the 'dags' folder within the airflow directory, if we look in the airflow.cfg we can see that this is the default path airflow will look for jobs/dags once run
 
