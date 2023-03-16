@@ -29,7 +29,7 @@ import sys
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.13:3.3.1,org.apache.spark:spark-sql_2.13:3.3.1,org.postgresql:postgresql:42.3.3 pyspark-shell'
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.13:3.3.1,org.postgresql:postgresql:42.2.10 pyspark-shell'
 
-os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1, org.postgresql:postgresql:42.3.3 pyspark-shell'
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,org.postgresql:postgresql:42.2.10 pyspark-shell'
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
@@ -79,7 +79,10 @@ stream_df.printSchema()
 
 stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_count"), "k", "000"))
 stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_count"), "M", "000000"))
+stream_df =stream_df.select(stream_df["category"],stream_df["follower_count"],stream_df["unique_id"])
 
+
+# ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
 
 # def foreach_batch_function(df, epoch_id):
 #     url = 'jdbc:postgresql://localhost:5432/pinterest_streaming'
@@ -88,6 +91,7 @@ stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_c
 
 # ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
 #%%
+# stream to console
 # stream_df.writeStream.format("jdbc").foreachBatch(foreach_batch_function).outputMode('update').format('console').start().awaitTermination() 
 
 
@@ -98,19 +102,19 @@ def _write_streaming(
 ) -> None:         
 
     df.write \
-        .mode('update') \
+        .mode('append') \
         .format("jdbc") \
-        .option("url", "jdbc:postgresql://localhost:5432/pinterest_streaming") \
+        .option("url", "jdbc:postgresql://localhost:5432") \
         .option("driver", "org.postgresql.Driver") \
-        .option("dbtable", 'experimental_data') \
+        .option("dbtable", 'pinterest_streaming.experimental_data') \
         .option("user", 'postgres') \
         .option("password", postgres_ps) \
         .save() 
 
 stream_df.writeStream \
     .foreachBatch(_write_streaming) \
-    .outputMode('update') \
-    .format('console') \
     .start() \
     .awaitTermination()
+     # .outputMode('update') \
+    # .format('console') \
 #%%
