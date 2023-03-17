@@ -96,7 +96,7 @@ properties = {'user':'postgres',
               'password':str(postgres_ps),
               'driver':'com.mysql.cj.jdbc.Driver'
               }
-table = 'pinterest_streaming.experimental_data'
+table = '/pinterest_streaming.experimental_data'
 
 try:
     schemaDF = spark.read.jdbc(mysqlUrl, table, properties=properties)
