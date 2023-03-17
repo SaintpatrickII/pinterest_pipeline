@@ -90,6 +90,25 @@ stream_df =stream_df.select(stream_df["category"],stream_df["follower_count"],st
 #     df.write.jdbc(url=url, table="experimental_data", mode="append", properties=properties)
 
 # ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
+
+mysqlUrl = "jdbc://postgresql://localhost:5432"
+properties = {'user':'postgres',
+              'password':str(postgres_ps),
+              'driver':'com.mysql.cj.jdbc.Driver'
+              }
+table = 'pinterest_streaming.experimental_data'
+
+try:
+    schemaDF = spark.read.jdbc(mysqlUrl, table, properties=properties)
+    print('schema DF loaded')
+except Exception:
+    print('schema DF does not exist!')
+
+
+
+
+
+
 #%%
 # stream to console
 # stream_df.writeStream.format("jdbc").foreachBatch(foreach_batch_function).outputMode('update').format('console').start().awaitTermination() 
@@ -108,7 +127,8 @@ def _write_streaming(
         .option("driver", "org.postgresql.Driver") \
         .option("dbtable", 'pinterest_streaming.experimental_data') \
         .option("user", 'postgres') \
-        .option("password", postgres_ps) \
+        .option("password", str(postgres_ps)) \
+        .option("createTableColumnTypes", "category CHAR(64), follower_count CHAR(64), unique_id CHAR(64)") \
         .save() 
 
 stream_df.writeStream \
