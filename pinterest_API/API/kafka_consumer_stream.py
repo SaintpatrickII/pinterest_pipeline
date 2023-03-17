@@ -93,10 +93,10 @@ stream_df =stream_df.select(stream_df["category"],stream_df["follower_count"],st
 
 mysqlUrl = "jdbc://postgresql://localhost:5432"
 properties = {'user':'postgres',
-              'password':str(postgres_ps),
+              'password':postgres_ps,
               'driver':'com.mysql.cj.jdbc.Driver'
               }
-table = 'public.experimental_data'
+table = 'pinterest_streaming.experimental_data'
 
 try:
     schemaDF = spark.read.jdbc(mysqlUrl, table, properties=properties)
@@ -125,9 +125,9 @@ def _write_streaming(
         .format("jdbc") \
         .option("url", "jdbc:postgresql://localhost:5432") \
         .option("driver", "org.postgresql.Driver") \
-        .option("dbtable", 'public.experimental_data') \
+        .option("dbtable", 'pinterest_streaming.experimental_data') \
         .option("user", 'postgres') \
-        .option("password", str(postgres_ps)) \
+        .option("password", postgres_ps) \
         .option("createTableColumnTypes", "category CHAR(64), follower_count CHAR(64), unique_id CHAR(64)") \
         .save() 
 
