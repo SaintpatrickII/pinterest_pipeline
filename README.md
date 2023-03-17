@@ -189,3 +189,10 @@ before we run the file we have to also start the stream as pyspark will not do t
 
 Using postgres we now create a new database titlied 'pinterest_streaming' & a table 'experimental_data' where we will stream this data to
 
+- pyspark new requires an additional spark connector for postgres 'org.postgresql:postgresql:42.2.10', so we add this to the PYSPARK_SUBMIT_ARGS
+
+- Now instead of writing the stream to the console we neeed to write the stream to postgres utilising jdbc (sparks is written in java, this is the method of connecting to postgres, JDBC = java dataBase connector), as we add data to the table we need to also create columns for th data to be inserted into
+
+- This method requires user credentials & path the table
+
+<img width="687" alt="Screenshot 2023-03-17 at 11 32 20" src="https://user-images.githubusercontent.com/92804317/225893249-44ac27b5-51cd-4c72-981b-506b04afa1b9.png">
