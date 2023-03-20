@@ -75,12 +75,12 @@ stream_pls = spark \
     .load() \
     .selectExpr("CAST(value as STRING)")
 stream_df =stream_pls.withColumn("temp", explode(from_json("value", schema))).select("temp.*") 
-stream_df.printSchema()
+# stream_df.printSchema()
 
 stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_count"), "k", "000"))
 stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_count"), "M", "000000"))
 stream_df =stream_df.select(stream_df["category"],stream_df["follower_count"],stream_df["unique_id"])
-
+stream_df.printSchema()
 
 # ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
 
@@ -90,13 +90,13 @@ stream_df =stream_df.select(stream_df["category"],stream_df["follower_count"],st
 #     df.write.jdbc(url=url, table="experimental_data", mode="append", properties=properties)
 
 # ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
-
-mysqlUrl = "jdbc://postgresql://localhost:5432"
+database_name = 'pinterest_streaming/experimental_data'
+mysqlUrl = f"jdbc://postgresql://localhost:5432/{database_name}"
 properties = {'user':'postgres',
               'password':postgres_ps,
-              'driver':'com.mysql.cj.jdbc.Driver'
+              'driver':'org.postgresql.Driver'
               }
-table = 'pinterest_streaming.experimental_data'
+table = 'experimental_data'
 
 try:
     schemaDF = spark.read.jdbc(mysqlUrl, table, properties=properties)
@@ -113,7 +113,7 @@ except Exception:
 # stream to console
 # stream_df.writeStream.format("jdbc").foreachBatch(foreach_batch_function).outputMode('update').format('console').start().awaitTermination() 
 
-
+database_name = 'pinterest_streaming'
 
 def _write_streaming(
     df,
@@ -123,9 +123,9 @@ def _write_streaming(
     df.write \
         .mode('append') \
         .format("jdbc") \
-        .option("url", "jdbc:postgresql://localhost:5432") \
+        .option("url", f"jdbc:postgresql://localhost:5432/{database_name}/") \
         .option("driver", "org.postgresql.Driver") \
-        .option("dbtable", 'pinterest_streaming.experimental_data') \
+        .option("dbtable", 'experimental_data') \
         .option("user", 'postgres') \
         .option("password", postgres_ps) \
         .option("createTableColumnTypes", "category CHAR(64), follower_count CHAR(64), unique_id CHAR(64)") \
