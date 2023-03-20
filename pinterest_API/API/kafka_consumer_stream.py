@@ -35,7 +35,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 # com.zaxxer:HikariCP:3.3.1
 # postgres_ps = os.environ['POSTGRES_PASSWORD']
-postgres_ps = os.environ.get('POSTGRESS_PASSWORD')
+postgres_ps = os.environ.get('POSTGRES_PASSWORD')
 
            
         
@@ -123,13 +123,14 @@ def _write_streaming(
     df.write \
         .mode('append') \
         .format("jdbc") \
-        .option("url", f"jdbc:postgresql://localhost:5432/{database_name}/") \
+        .option("url", f"jdbc:postgresql://localhost:5432/pinterest_streaming") \
         .option("driver", "org.postgresql.Driver") \
         .option("dbtable", 'experimental_data') \
         .option("user", 'postgres') \
         .option("password", postgres_ps) \
-        .option("createTableColumnTypes", "category CHAR(64), follower_count CHAR(64), unique_id CHAR(64)") \
         .save() 
+        # .option("createTableColumnTypes", "category CHAR(64), follower_count CHAR(64), unique_id CHAR(64)") \
+        
 
 stream_df.writeStream \
     .foreachBatch(_write_streaming) \
