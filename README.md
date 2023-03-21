@@ -178,7 +178,7 @@ so before we begin coding the stream we add the line 'os.environ['PYSPARK_SUBMIT
 
 - Notice here we did some minor feature selection in only cleaning some of the data, for this i simply chose: category, follower_count, downloaded for an easy model if we were to train it
 
-before we run the file we have to also start the stream as pyspark will not do this automatically, we have to pass a long arguement of writing the stream from our dataframe, fomat it to the console in order to print it to console, start the stream & then end the stream whenever the user stops the program
+- Before we run the file we have to also start the stream as pyspark will not do this automatically, we have to pass a long arguement of writing the stream from our dataframe, fomat it to the console in order to print it to console, start the stream & then end the stream whenever the user stops the program
 
 <img width="692" alt="Screenshot 2023-03-16 at 11 09 14" src="https://user-images.githubusercontent.com/92804317/225599570-4893aa48-edec-4d1c-ad92-5fa7bef4fdeb.png">
 
@@ -187,12 +187,19 @@ before we run the file we have to also start the stream as pyspark will not do t
 
 # 7. Storage
 
-Using postgres we now create a new database titlied 'pinterest_streaming' & a table 'experimental_data' where we will stream this data to
+- Using postgres we now create a new database titlied 'pinterest_streaming' & a table 'experimental_data' where we will stream this data to
 
 - pyspark new requires an additional spark connector for postgres 'org.postgresql:postgresql:42.2.10', so we add this to the PYSPARK_SUBMIT_ARGS
 
-- Now instead of writing the stream to the console we neeed to write the stream to postgres utilising jdbc (sparks is written in java, this is the method of connecting to postgres, JDBC = java dataBase connector), as we add data to the table we need to also create columns for th data to be inserted into
+- Now instead of writing the stream to the console we neeed to write the stream to postgres utilising jdbc (sparks is written in java, this is the method of connecting to postgres, JDBC = java dataBase connector), as we add data to the table we need to also create columns for the data to be inserted into
 
 - This method requires user credentials & path the table
 
 <img width="687" alt="Screenshot 2023-03-17 at 11 32 20" src="https://user-images.githubusercontent.com/92804317/225893249-44ac27b5-51cd-4c72-981b-506b04afa1b9.png">
+
+- For this stream to be written we either need to create empty columns in the postgres app of directly into our stream writing method
+
+- Now as we run the code we can see an update to our Postgres file containing our inserted datastream
+
+<img width="555" alt="Screenshot 2023-03-20 at 13 31 33" src="https://user-images.githubusercontent.com/92804317/226551321-640ec96d-4e42-4abd-bf99-375e5ab50abb.png">
+
