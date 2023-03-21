@@ -82,43 +82,24 @@ stream_df = stream_df.withColumn("follower_count",regexp_replace(col("follower_c
 stream_df =stream_df.select(stream_df["category"],stream_df["follower_count"],stream_df["unique_id"])
 stream_df.printSchema()
 
+
+#  For printing to console
 # ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
-
-# def foreach_batch_function(df, epoch_id):
-#     url = 'jdbc:postgresql://localhost:5432/pinterest_streaming'
-#     properties = {"user": "postgres", "password": postgres_ps, "driver": "org.postgresql.Driver"}
-#     df.write.jdbc(url=url, table="experimental_data", mode="append", properties=properties)
-
-# ds = stream_df.writeStream.outputMode('update').format('console').start().awaitTermination()   
-database_name = 'pinterest_streaming/experimental_data'
-mysqlUrl = f"jdbc://postgresql://localhost:5432/{database_name}"
-properties = {'user':'postgres',
-              'password':postgres_ps,
-              'driver':'org.postgresql.Driver'
-              }
-table = 'experimental_data'
-
-try:
-    schemaDF = spark.read.jdbc(mysqlUrl, table, properties=properties)
-    print('schema DF loaded')
-except Exception:
-    print('schema DF does not exist!')
-
-
-
-
-
-
 #%%
-# stream to console
-# stream_df.writeStream.format("jdbc").foreachBatch(foreach_batch_function).outputMode('update').format('console').start().awaitTermination() 
 
-database_name = 'pinterest_streaming'
+
 
 def _write_streaming(
     df,
     epoch_id
 ) -> None:         
+
+    """
+    > The function takes a dataframe and an epoch id, and writes the dataframe to a Postgres database
+    
+    :param df: the dataframe to write
+    :param epoch_id: the epoch id of the dataframe
+    """
 
     df.write \
         .mode('append') \
@@ -132,6 +113,7 @@ def _write_streaming(
         # .option("createTableColumnTypes", "category CHAR(64), follower_count CHAR(64), unique_id CHAR(64)") \
         
 
+# Takes stream & writes it to postgres
 stream_df.writeStream \
     .foreachBatch(_write_streaming) \
     .start() \
