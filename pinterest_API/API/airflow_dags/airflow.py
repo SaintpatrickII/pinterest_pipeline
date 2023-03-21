@@ -38,3 +38,5 @@ with DAG(dag_id='update_batch_clean_dataset',
         task_id='spark_cleaning',
         bash_command='python3 /Users/paddy/Desktop/pinterest_pipeline/pinterest_API/API/spark_batch.py',
         dag=dag)
+
+sleep2 >> consume_kafka_messages >> sleep3 >> spark_cleaning 
