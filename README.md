@@ -24,14 +24,14 @@ Kafka Download: https://kafka.apache.org/downloads
 
 - For this I had installed the scala 2.12 version (via spark) to avoid any compatibility issues .From here the file is stored as a compressed archive file in downloads,  in the console a quick change to 'cd Downloads' and 'tar -xf filename -C ~' to uncompress the file & move it to the home directory
 
-- by looking through the server.properties file within kafka/config/server_properties we can see the correct port to be 9092 as shown below, this will be the 'bootstrap_server' we connect to with Kafka, note here when referencing in code this is actually 'localhost:9092'
+- By looking through the server.properties file within kafka/config/server_properties we can see the correct port to be 9092 as shown below, this will be the 'bootstrap_server' we connect to with Kafka, note here when referencing in code this is actually 'localhost:9092'
 
 <img width="911" alt="Screenshot 2023-03-09 at 14 59 39" src="https://user-images.githubusercontent.com/92804317/224064081-f3bec1c8-8968-4d00-a07c-974d603b06cc.png">
 
 - In kafkas current build it is impossible to run without the zookeeper, the zookeeper is responsible for brokers (servers) & partitions/leader elections
 
-- so before we start coding up we setup our kafka zookeeper within the binary folder of kafka, here we use bash to start the zookeeper server connected to our zookeeper.properties file within the config folder, the same is done with the binary server-start linked to the config server.properties again as shown below
-- 
+- So before we start coding up we setup our kafka zookeeper within the binary folder of kafka, here we use bash to start the zookeeper server connected to our zookeeper.properties file within the config folder, the same is done with the binary server-start linked to the config server.properties again as shown below
+
 <img width="1013" alt="Screenshot 2023-03-09 at 15 04 49" src="https://user-images.githubusercontent.com/92804317/224065748-57dd7660-297b-4357-a0cf-9385684685fb.png">
 
 <img width="1013" alt="Screenshot 2023-03-09 at 15 05 54" src="https://user-images.githubusercontent.com/92804317/224065805-ff91102b-3f8a-487c-bc3a-fb67adf5e4c1.png">
@@ -46,9 +46,9 @@ Kafka Download: https://kafka.apache.org/downloads
 
 <img width="568" alt="Screenshot 2023-03-09 at 15 16 40" src="https://user-images.githubusercontent.com/92804317/224078064-f5941bbe-6290-4858-b23f-6dcc6f034e5b.png">
 
-- the producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, this converts the incoming data (here a dictionary) str representaion, originally i had encoded into a bytes array however when decoding this leads to alot of escaped unicode characters which are (awful) to deal with.
+- The producer is setup, here we connect to our localhost, in the producer the bootstrap server is 9092 as specified within  server.properties, alongside this we need a value serializer, here we use json.dumps() this converts the incoming data (here a dictionary) into str representaion, we cannot use json.dump as this requireda target file endpoint for the data. originally I had encoded into a bytes array however when decoding this leads to alot of escaped unicode characters which are (awful) to deal with.
 
-- the producer we created acts like a basic python class where we call the .send method taking in ('topic', datapoint) as args, so in this code for every POST request made it will be sent to both the batch & streaming topics
+- The producer we created acts like a basic python class where we call the .send method taking in ('topic', datapoint) as args, so in this code for every POST request made it will be sent to both the batch & streaming topics
 
 <img width="568" alt="Screenshot 2023-03-09 at 15 51 42" src="https://user-images.githubusercontent.com/92804317/224078743-f0db661e-ba4b-49e7-9adb-4f18f70d3e17.png">
 
@@ -59,7 +59,7 @@ Kafka Download: https://kafka.apache.org/downloads
 
 - Access keys are generated, these are specified using AWS CLI & stored in .env file to be referenced in code (not today hackers) 
 
-- Once the batch messsage criteria is met the batch consumer transfers the list into a json file utilising json.loads(), loads must be used to send the data to S3 as loads deserialises the str(json) we dumped before in the value serializer
+- Once the batch messsage criteria is met the batch consumer transfers the list into a json file utilising json.loads(), loads must be used to send the data to S3 as loads deserialises the str(json) into a python dictionary that we dumped before in the value serializer
 
 <img width="652" alt="Screenshot 2023-03-09 at 16 44 46" src="https://user-images.githubusercontent.com/92804317/224094358-274fa71b-30de-4bf9-a042-01b837d7184d.png">
 
@@ -80,23 +80,23 @@ Java installation: https://www.java.com/en/download/
 - 
 <img width="763" alt="Screenshot 2023-03-09 at 17 15 30" src="https://user-images.githubusercontent.com/92804317/224104680-a0747de9-e6fb-49ce-abcf-83dc63da4156.png">
 
-- to find filepath & version of java installed, use commands below
+- To find filepath & version of java installed, use commands below
 
 <img width="563" alt="Screenshot 2023-03-09 at 17 09 49" src="https://user-images.githubusercontent.com/92804317/224104732-65d64be5-74df-41b2-a9e6-7d8643b55161.png">
 
-once in a new python file we can import findspark & run findspark.find() which will return our spark path, to double check spark is working in the console we can run spark -shell
+- Once in a new python file we can import findspark & run findspark.find() which will return our spark path, to double check spark is working in the console we can run spark -shell
 
 <img width="820" alt="Screenshot 2023-03-09 at 17 28 11" src="https://user-images.githubusercontent.com/92804317/224107514-24b28a63-40c2-4adc-b4b3-75f07c31cc24.png">
 
 - Once spark is setup we have to setup spark to read in our saved json, firstly a os.environ arg is setup to link spark to AWS S3 via maven coodinates of both at the same versions we have
 
-- what is a maven coordinate? Spark itself cannot access or send data to different destinations i.e. cloud services by itself, we need 'spark connectors', the maven repository contains the necessary coordinates to interact with these different services, we have to tell spark how to find these
+- What is a maven coordinate? Spark itself cannot access or send data to different destinations i.e. cloud services by itself, we need 'spark connectors', the maven repository contains the necessary coordinates to interact with these different services usually these coordinates point to JAR files, we have to tell spark how to find these
 
-- for our project we need to pass PYSPARK_SUBMIT_ARGS to update maven coordinates for the aws-java-sdk and hadoop-aws
--
+- For our project we need to pass PYSPARK_SUBMIT_ARGS to update maven coordinates for the aws-java-sdk and hadoop-aws
+
 <img width="846" alt="Screenshot 2023-03-09 at 17 42 02" src="https://user-images.githubusercontent.com/92804317/224111007-9e8f74c2-2a78-4c92-9247-4e6c0f42e782.png">
 
-- After this we can now setup a configuration, here we name our app (i like to think of this like an instance of spark) & add it to a sparkcontext method which creates a connection to spark with our configuration which in turn is added to a sparksession method to start our instance
+- After this we can now setup a configuration, here we name our app (I like to think of this like an instance of spark) & add it to a sparkcontext method which creates a connection to spark with our configuration which in turn is added to a sparksession method to start our instance
 
 - Alongside this hadoop is utilised to perform the distributed computing we want (and is necessary to utilise pyspark), whereas pyspark is the RDD which computes transformations, here we add args to allow hadoop access to our s3 bucket via access and secret access keys set in an .env file, to note here all s3 methods utilise the s3a applications
 
@@ -134,7 +134,7 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 - DAG's can be created using python scripting (Within the dags folder!) & utilise bashOperators to move through directories & execute commands, default_args are used to sign into airflow from the local system
 
-- a DAG class is created taking in user login information as an arg, aslo in these args jobs can be scheduled utilising cronjobs labeled 'schedule_interval' arguement, for this we want the job to schedule everyday at midday so '0 12 * * *' by using https://crontab.guru
+- A DAG class is created taking in user login information as an arg, aslo in these args jobs can be scheduled utilising cronjobs labeled 'schedule_interval' arguement, for this we want the job to schedule everyday at midday so '0 12 * * *' by using https://crontab.guru
 
 <img width="802" alt="Screenshot 2023-03-16 at 10 33 12" src="https://user-images.githubusercontent.com/92804317/225590669-1c167199-6385-494d-bd00-7144a71a84b1.png">
 
@@ -144,7 +144,7 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 <img width="802" alt="Screenshot 2023-03-16 at 10 33 12" src="https://user-images.githubusercontent.com/92804317/225591862-50a520e6-67f8-4365-8262-e812898e5fbf.png">
 
--Here we are simply running both our kafka batch upload to S3 file & then running the file for cleaning said S3 data with pyspark
+- Here we are simply running both our kafka batch upload to S3 file & then running the file for cleaning said S3 data with pyspark
 
 - If we look at airlow we can see the progress of jobs, a graph view of task ordering & also the code which airflow is using for the DAG
 
@@ -162,7 +162,7 @@ once in a new python file we can import findspark & run findspark.find() which w
 
 ![Screenshot 2023-03-16 at 09 43 52](https://user-images.githubusercontent.com/92804317/225600235-85960a5b-f630-4a2f-b0b0-79303cde0745.png)
 
-so before we begin coding the stream we add the line 'os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 pyspark-shell'
+- so before we begin coding the stream we add the line 'os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 pyspark-shell'
 
 - Streaming alike batch begins with setting a SparkSession however we now have to set our spark to read the stream, to do this we need the bootstrap, topic name ( to subscribe to the topic), & we want to load the stream
 
@@ -189,7 +189,7 @@ so before we begin coding the stream we add the line 'os.environ['PYSPARK_SUBMIT
 
 - Using postgres we now create a new database titlied 'pinterest_streaming' & a table 'experimental_data' where we will stream this data to
 
-- pyspark new requires an additional spark connector for postgres 'org.postgresql:postgresql:42.2.10', so we add this to the PYSPARK_SUBMIT_ARGS
+- Pyspark new requires an additional spark connector for postgres 'org.postgresql:postgresql:42.2.10', so we add this to the PYSPARK_SUBMIT_ARGS
 
 - Now instead of writing the stream to the console we neeed to write the stream to postgres utilising jdbc (sparks is written in java, this is the method of connecting to postgres, JDBC = java dataBase connector), as we add data to the table we need to also create columns for the data to be inserted into
 
